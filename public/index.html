@@ -1,0 +1,1290 @@
+<!DOCTYPE>
+<html ng-app="myApp">
+<head>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+
+		<title>RAXIS GAME</title>
+    <!-- Css link -->
+		<link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
+		<link rel="stylesheet" href="css/owl.carousel.css">
+		<link rel="stylesheet" href="css/owl.transitions.css">
+		<link rel="stylesheet" href="css/animate.min.css">
+		<link rel="stylesheet" href="css/lightbox.css">
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/preloader.css">
+		<link rel="stylesheet" href="css/image.css">
+		<link rel="stylesheet" href="css/icon.css">
+		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/responsive.css">
+
+<!--game scripts-->
+<script src="/client/socket.js"></script>
+<!--link href="index.css" media="screen" rel="stylesheet" type="text/css"-->
+<!-- Load the GUI rendering library code. -->
+<script type="text/javascript" src="lib/dat.gui.min.js"></script>
+<!-- Load the keyboard specific code -->
+<script type="text/javascript" src="lib/keyboard.js"></script>
+<!--game scripts-->
+<link rel="stylesheet" href="css/estilos.css">
+
+</head>
+
+<body background="img/calaca.jpg">
+<!-- particles.js container -->
+<div id="particles-js" >
+	<div align="center" style="padding-top:5cm;">
+	<div id="signDiv">
+		<div align="center" style="padding-right:14cm;padding-left:14cm;">Username:
+			<input id="signDiv-username" type="text"
+
+	style="width: 100%;
+	background:rgba(50, 61, 54, 0.56);
+	padding: 14px 14px;
+	margin: 8px 0;
+	box-sizing: border-box; color:rgb(218, 231, 226); "></input></div><br>
+		<div align="center" style="padding-right:14cm;padding-left:14cm;">Password:
+			<input id="signDiv-password" type="password"
+
+	style="width: 100%;
+	background:rgba(50, 61, 54, 0.56);
+	padding: 14px 14px;
+	margin: 8px 0;
+	box-sizing: border-box; color:rgb(218, 231, 226);"></input></div><br><br>
+		<div align="center">
+			<button id="signDiv-signIn" style="    background:transparent; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 15px"><h3 style="color:red">PLAY</h3></button></div><br><br>
+		<div align="center">
+			<button id="signDiv-signUp" style="    background:transparent; /* Green */
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 15px"><h3 style="color:red">Sign Up</h3></button></div>
+	</div>
+</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.12/angular.min.js"></script>
+	<script src="controllers/controller.js"></script>
+<!--div id="config" style="display:none;">
+	<div align="center" style="padding-right:10cm;padding-left:10cm;">Username: <input id="signDiv-username" type="text" style="width: 100%;
+padding: 8px 12px;
+margin: 8px 0;
+box-sizing: border-box; padding-left:10cm;"></input></div>
+</div-->
+
+<div id="gameDiv" style="display:none; " >
+<!--nuevo canvas-->
+<canvas id="ctx" width="800" height="800" style="border:1px solid #000000; " background="img/calaca.jpg"></canvas>
+<!---->
+<!--antiguo canvas-->
+	<!--canvas id="ctx" width="500" height="500" style="border:1px solid #000000;"></canvas-->
+<!---->
+	<!--div id="chat-text" style="width:500px;height:100px;overflow-y:scroll">
+		<div>Hello!</div>
+	</div-->
+
+	<!--form id="chat-form">
+		<input id="chat-input" type="text" style="width:500px"></input>
+	</form-->
+</div>
+</div>
+<!-- stats - count particles -->
+<div class="count-particles">
+  <span class="js-count-particles">--</span> particles
+</div>
+<!-- particles.js lib (JavaScript CodePen settings): https://github.com/VincentGarreau/particles.js -->
+<script src='http://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js'></script>
+<script src='http://threejs.org/examples/js/libs/stats.min.js'></script>
+<script src="js/index.js"></script>
+
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/waypoints.min.js"></script>
+<script src="js/lightbox.js"></script>
+<script src="js/jquery.counterup.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
+<script src="js/html5lightbox.js"></script>
+<script src="js/jquery.mixitup.js"></script>
+<script src="js/wow.min.js"></script>
+<script src="js/jquery.scrollUp.js"></script>
+<script src="js/jquery.sticky.js"></script>
+<script src="js/jquery.nav.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
+<audio src="/client/audio/musicafondo.mp3" autoplay>
+<script>
+//socket
+var socket = io();
+//socket declare
+/******************************************/
+//sign
+var signDiv = document.getElementById('signDiv');
+var signDivUsername = document.getElementById('signDiv-username');
+var signDivSignIn = document.getElementById('signDiv-signIn');
+var signDivSignUp = document.getElementById('signDiv-signUp');
+var signDivPassword = document.getElementById('signDiv-password');
+/******************************************/
+
+/*************Sign in******************/
+signDivSignIn.onclick = function()
+{
+	socket.emit('signIn',{username:signDivUsername.value,password:signDivPassword.value});
+}
+signDivSignUp.onclick = function()
+{
+	socket.emit('signUp',{username:signDivUsername.value,password:signDivPassword.value});
+}
+socket.on('signInResponse',function(data)
+{
+	if(data.success)
+	{
+		signDiv.style.display = 'none';
+		//config.style.display='inline-block';
+		gameDiv.style.display = 'inline-block';
+	} else
+		alert("Sign in unsuccessul.");
+});
+socket.on('signUpResponse',function(data)
+{
+	if(data.success)
+	{
+		alert("Sign up successul.");
+	} else
+		alert("Sign up unsuccessul.");
+});
+
+/*****sign in*/
+
+//chat
+/*
+var chatText = document.getElementById('chat-text');
+var chatInput = document.getElementById('chat-input');
+var chatForm = document.getElementById('chat-form');
+
+socket.on('addToChat',function(data)
+{
+	chatText.innerHTML += '<div>' + data + '</div>';
+});
+socket.on('evalAnswer',function(data)
+{
+	console.log(data);
+});*/
+
+/*
+chatForm.onsubmit = function(e)
+{
+	e.preventDefault();
+	if(chatInput.value[0] === '/')
+		socket.emit('evalServer',chatInput.value.slice(1));
+	else
+		socket.emit('sendMsgToServer',chatInput.value);
+	chatInput.value = '';
+}*/
+
+/*******************chat end*/
+
+var ctx = document.getElementById("ctx").getContext("2d");
+
+ctx.font = '30px Arial';
+ctx.mozImageSmoothingEnabled = false;	//better graphics for pixel art
+ctx.msImageSmoothingEnabled = false;
+ctx.imageSmoothingEnabled = false;
+
+var TILE_SIZE = 32;
+var WIDTH = 800;
+var HEIGHT = 800;
+var timeWhenGameStarted = Date.now();	//return time in ms
+
+var frameCount = 0;
+
+var score = 0;
+
+var paused = false;
+
+var Img = {};
+Img.player = new Image();
+Img.player.src = "/img/PlayerArma.png";
+Img.bat = new Image();
+Img.bat.src = '/img/bat.png';
+Img.bee = new Image();
+Img.bee.src = '/img/bee.png';
+Img.bullet = new Image();
+Img.bullet.src = '/img/bullet2.png';
+Img.bullet3 = new Image();
+Img.bullet3.src = '/img/bullet3.png';
+Img.upgrade1 = new Image();
+Img.upgrade1.src = '/img/upgrade1.png';
+Img.upgrade2 = new Image();
+Img.upgrade2.src = '/img/upgrade2.png';
+Img.blood=new Image();
+Img.blood.src='/img/bloodL.png';
+Img.blade=new Image();
+Img.blade.src='/img/blade.png';
+Img.mapa=new Image();
+Img.mapa.src='/img/map.png';
+
+var Player = function(initPack)
+{
+	//console.log("initPack",initPack);
+//	console.log(initPack);
+	var self = {};
+	self.id = initPack.id;//recibe id
+	self.number = initPack.number;
+	self.x = initPack.x;
+	self.y = initPack.y;
+	self.hp = initPack.hp;
+	self.hpMax = initPack.hpMax;
+	self.score = initPack.score;
+	self.map = initPack.map;//9btenemos el m4pa
+	self.mouseAngle=initPack.mouseAngle;
+/******************************/
+/**/
+ 	var pressingDown = false;
+ 	var pressingUp = false;
+ 	var pressingLeft = false;
+ 	var pressingRight = false;
+/**/
+	var spriteAnimCounter = 0;
+//	console.log("pressingMouseRight:",pressingRight);
+
+/***********************/
+	var entidad=Entity("player",self.id,self.x,self.y,Img.player.width,Img.player.height,Img.player);
+
+	self.width=	50*1.5;
+	self.height=70*1.5;
+/**/
+/*********************************************************/
+	self.updatePosition = function(){
+		var leftBumper = {x:self.x - 40,y:self.y};
+		var rightBumper = {x:self.x + 40,y:self.y};
+		var upBumper = {x:self.x,y:self.y - 16};
+		var downBumper = {x:self.x,y:self.y + 64};
+
+		if(Maps.current.isPositionWall(rightBumper)){
+			//console.log("x antes=",self.x);
+			self.x = self.x-1;
+			//console.log("x despues=",self.x);
+			//console.log("topo por la derecha");
+			//spriteAnimCounter+=0.3;
+		} else {
+			if(self.pressingRight){
+			//	console.log("pressingRight:::",self.pressingRight);
+				spriteAnimCounter+=0.3;
+				self.x += 1;//maxima velocidad
+			}
+		}
+		if(Maps.current.isPositionWall(leftBumper)){
+			//console.log("x antes=",self.x);
+			self.x = self.x+1;
+			//console.log("x despues=",self.x);
+			console.log("topo por la izquierda");
+			//spriteAnimCounter+=0.3;
+		} else {
+			if(self.pressingLeft){
+					spriteAnimCounter+=0.3;
+				//	console.log("pressingLeft:::",self.pressingLeft);
+					self.x -= 1;
+			}
+
+		}
+		if(Maps.current.isPositionWall(downBumper)){
+			//console.log("y antes=",self.y);
+			self.y = self.y-1;
+			//console.log("y despues=",self.y);
+			//console.log("topo por abajo");
+			//spriteAnimCounter+=0.3;
+		} else {
+			if(self.pressingDown){
+				spriteAnimCounter+=0.3;
+			//	console.log("pressingDown:::",self.pressingDown);
+				self.y += 1;
+			}
+
+		}
+		if(Maps.current.isPositionWall(upBumper)){
+			//console.log("y antes=",self.y);
+			self.y =self.y+1;
+			//console.log("y despues=",self.y);
+			//console.log("topo por arriba");
+			//spriteAnimCounter+=0.3;
+		} else {
+			if(self.pressingUp)
+			spriteAnimCounter+=0.3;//recorre la imagen
+				self.y -= 1;
+		}
+		//ispositionvalid
+		if(self.x < Img.player.width/2)
+			self.x = Img.player.width/2;
+		if(self.x > Maps.current.width-Img.player.width/2)
+			self.x = Maps.current.width - Img.player.width/2;
+		if(self.y < Img.player.height/2)
+			self.y = Img.player.height/2;
+		if(self.y > Maps.current.height - Img.player.height/2)
+			self.y = Maps.current.height - Img.player.height/2;
+
+	}
+	/*****************************/
+	self.testCollision = function(entity2){	//return if colliding (true/false)
+		var rect1 =
+		{
+			x:self.x-Img.player.width/2,
+			y:self.y-Img.player.height/2,
+			width:Img.player.width,
+			height:Img.player.height,
+		}
+		var rect2 =
+		{
+			x:entity2.x-entity2.width/2,
+			y:entity2.y-entity2.height/2,
+			width:entity2.width,
+			height:entity2.height,
+		}
+		return testCollisionRectRect(rect1,rect2);
+	}
+	self.draw = function(){
+		ctx.save();
+		if(Player.list[selfId].map !== self.map)
+			return;
+		/*var x = self.x - Player.list[selfId].x + WIDTH/2;
+		var y = self.y - Player.list[selfId].y + HEIGHT/2;*/
+/************************************/
+
+		var x = self.x - Player.list[selfId].x;
+		var y = self.y - Player.list[selfId].y;
+
+		x += WIDTH/2;
+		y += HEIGHT/2;
+
+		x -= Img.player.width/2;
+		y -= Img.player.height/2;
+
+		var hpWidth = 30 * self.hp / self.hpMax;
+		ctx.fillStyle = 'red';
+		ctx.fillRect(x - hpWidth/2,y - 40,hpWidth,4);
+
+		var width = Img.player.width;
+		var height = Img.player.height;
+/********************************************************************************/
+		var frameWidth = Img.player.width/3;
+		var frameHeight = Img.player.height/4;
+
+		var aimAngle =self.mouseAngle ;
+		if(aimAngle < 0)
+			aimAngle = 360 + aimAngle;
+	//	console.log("angle",aimAngle);
+
+		var directionMod = 3;	//draw right
+		if(aimAngle >= 45 && aimAngle < 135)	//down
+			directionMod = 2;
+		else if(aimAngle >= 135 && aimAngle < 225)	//left
+			directionMod = 1;
+		else if(aimAngle >= 225 && aimAngle < 315)	//up
+			directionMod = 0;
+		/**************************/
+		var walkingMod = Math.floor(spriteAnimCounter) % 3;//1,2
+		ctx.drawImage(Img.player,
+			walkingMod*frameWidth,directionMod*frameHeight,frameWidth,frameHeight,
+			x,y,Img.player.width,Img.player.height);
+		self.updatePosition();
+		ctx.restore();
+
+	/*	ctx.drawImage(
+									Img.player,
+									0,//start clipping
+									0,
+									Img.player.width,//clipped
+									Img.player.height,
+									x-width/2,//canvas
+									y-height/2,
+									width,//image dimensions
+									height);*/
+
+		//ctx.fillText(self.score,self.x,self.y-60);
+	}
+	Player.list[self.id] = self;
+
+	self.onDeath = function()
+	{
+		var timeSurvived = Date.now() - timeWhenGameStarted;
+		console.log("You lost! You survived for " + timeSurvived + " ms.");
+
+		ctx.drawImage(Img.blood,
+			0,0,Img.blood.width,Img.blood.height,
+			WIDTH/2,HEIGHT/2,Img.blood.width,Img.blood.height);
+			self.score-=30;
+	}
+	self.update = function(){
+			self.updatePosition();
+	self.draw();
+}
+self.update();
+	return self;
+}//Player
+Player.list = {};
+
+/**********************var Bullet******************/
+var selfId_B=null;
+var Bullet = function(initPack){
+	var self = {};
+	self.id = initPack.id;
+	self.x = initPack.x;
+	self.y = initPack.y;
+	self.map = initPack.map;
+
+	self.draw = function(){
+		if(Player.list[selfId].map !== self.map)
+			return;
+		var width = Img.bullet.width/2;
+		var height = Img.bullet.height/2;
+
+		var x = self.x - Player.list[selfId].x + WIDTH/2;
+		var y = self.y - Player.list[selfId].y + HEIGHT/2;
+
+		ctx.drawImage(Img.bullet3,
+			0,0,Img.bullet3.width,Img.bullet3.height,
+			x-width/2,y-height/2,width,height);
+	}
+
+	Bullet.list[self.id] = self;
+
+	selfId_B=self.id;
+
+	return self;
+}
+Bullet.list = {};
+
+/**/
+var selfId = null;
+/**/
+/*************socket on init*/
+socket.on('init',function(data){
+	//console.log("on init", data);
+	if(data.selfId)
+		selfId = data.selfId;
+	//{ player : [{id:123,number:'1',x:0,y:0},{id:1,number:'2',x:0,y:0}], bullet: []}
+	for(var i = 0 ; i < data.player.length; i++){
+		new Player(data.player[i]);
+	}
+	for(var i = 0 ; i < data.bullet.length; i++){
+		new Bullet(data.bullet[i]);
+	}
+
+/*	for(var i = 0 ; i < data.upgrade.length; i++){
+		new Upgrade(data.upgrade[i]);
+	}*/
+});
+/**************************update************/
+socket.on('update',function(data){
+	//{ player : [{id:123,x:0,y:0},{id:1,x:0,y:0}], bullet: []}
+	for(var i = 0 ; i < data.player.length; i++)
+	{
+		var pack = data.player[i];
+		var p = Player.list[pack.id];
+		if(p){
+			if(pack.x !== undefined)
+				p.x = pack.x;
+			if(pack.y !== undefined)
+				p.y = pack.y;
+			if(pack.hp !== undefined)
+				p.hp = pack.hp;
+			if(pack.score !== undefined)
+				p.score = pack.score;
+		}
+	}
+	for(var i = 0 ; i < data.bullet.length; i++)
+	{
+		var pack = data.bullet[i];
+		var b = Bullet.list[data.bullet[i].id];
+		if(b){
+			if(pack.x !== undefined)
+				b.x = pack.x;
+			if(pack.y !== undefined)
+				b.y = pack.y;
+		}
+	}
+/*	for(var i = 0 ; i < data.upgrade.length; i++)
+	{
+		var pack = data.upgrade[i];
+		var u = Upgrade.list[data.upgrade[i].id];
+		if(u){
+			if(pack.x !== undefined)
+				u.x = pack.x;
+			if(pack.y !== undefined)
+				u.y = pack.y;
+		}
+	}*/
+});
+
+socket.on('remove',function(data){
+	//{player:[12323],bullet:[12323,123123]}
+	for(var i = 0 ; i < data.player.length; i++){
+		delete Player.list[data.player[i]];
+	}
+	for(var i = 0 ; i < data.bullet.length; i++){
+		delete Bullet.list[data.bullet[i]];
+	}
+
+});
+
+	var drawScore = function(){
+		ctx.fillStyle = 'white';
+		ctx.fillText(Player.list[selfId].score,0,30);
+		//console.log("selfId on drawScore:",selfId);
+	}
+
+Entity = function(type,id,x,y,width,height,img)
+{
+	var self = {
+		type:type,
+		id:id,
+		x:x,
+		y:y,
+		width:width,
+		height:height,
+		img:img,
+	};
+	self.update = function(){
+		self.updatePosition();
+		self.draw();
+	}
+
+	self.draw = function(){
+		var player=Player.list[selfId];
+		ctx.save();
+		var x = self.x - player.x;
+		var y = self.y - player.y;
+
+		x += WIDTH/2;
+		y += HEIGHT/2;
+
+		x -= self.width/2;
+		y -= self.height/2;
+
+		ctx.drawImage(self.img,
+			0,0,self.img.width,self.img.height,
+			x,y,self.width,self.height
+		);
+
+		ctx.restore();
+	}
+	self.getDistance = function(entity2){	//return distance (number)
+		var vx = self.x - entity2.x;
+		var vy = self.y - entity2.y;
+		return Math.sqrt(vx*vx+vy*vy);
+	}
+
+	self.testCollision = function(entity){	//return if colliding (true/false)
+		var player=Player.list[selfId];
+		var rect1 =
+		{
+			x:self.x-self.width/2,
+			y:self.y-self.height/2,
+			width:self.width,
+			height:self.height,
+		}
+		var rect2 =
+		{
+			x:entity.x-entity.width/2,
+			y:entity.y-entity.height/2,
+			width:entity.width,
+			height:entity.height,
+		}
+		return testCollisionRectRect(rect1,rect2);
+
+	}
+	self.updatePosition = function(){}
+
+	return self;
+}//Entity2*/
+
+//#####
+Upgrade = function (id,x,y,width,height,category,img)
+{
+	var self = Entity('upgrade',id,x,y,width,height,img);
+
+	self.category = category;
+	Upgrade.list[id] = self;
+}
+
+Upgrade.list = {};
+
+Upgrade.update = function()
+{
+	var player= Player.list[selfId];
+	if(frameCount % 75 === 0)	//every 3 sec
+		Upgrade.randomlyGenerate();
+	for(var key in Upgrade.list){
+		Upgrade.list[key].update();
+		var isColliding = player.testCollision(Upgrade.list[key]);
+		if(isColliding){
+			console.log("son collindantes");
+			if(Upgrade.list[key].category === 'score')
+				player.score+= 1000;
+			if(Upgrade.list[key].category === 'atkSpd')
+				player.atkSpd += 3;
+			delete Upgrade.list[key];
+		}
+	}
+}
+
+Upgrade.randomlyGenerate = function()
+{
+	//Math.random() returns a number between 0 and 1
+	var x = Math.random()*Maps.current.width;
+	var y = Math.random()*Maps.current.height;
+	var height = 32;
+	var width = 32;
+	var id = Math.random();
+
+	if(Math.random()<0.5){
+		var category = 'score';
+		var img = Img.upgrade1;
+	} else {
+		var category = 'atkSpd';
+		var img = Img.upgrade2;
+	}
+
+	Upgrade(id,x,y,width,height,category,img);
+}
+
+Actor = function(type,id,x,y,width,height,img,hp,atkSpd)
+{
+	var self = Entity(type,id,x,y,width,height,img);
+
+	self.hp = hp;
+	self.hpMax = hp;
+	self.atkSpd = atkSpd;
+	self.attackCounter = 0;
+	self.aimAngle = 0;
+
+	self.spriteAnimCounter = 0;
+
+	self.pressingDown = false;
+	self.pressingUp = false;
+	self.pressingLeft = false;
+	self.pressingRight = false;
+	self.maxMoveSpd = 3;
+
+	self.draw = function(){
+		var player=Player.list[selfId];
+		ctx.save();
+		var x = self.x - player.x;
+		var y = self.y - player.y;
+
+		x += WIDTH/2;
+		y += HEIGHT/2;
+
+		x -= self.width/2;
+		y -= self.height/2;
+
+		var frameWidth = self.img.width/3;
+		var frameHeight = self.img.height/4;
+
+		var aimAngle = self.aimAngle;
+		if(aimAngle < 0)
+			aimAngle = 360 + aimAngle;
+
+		var directionMod = 2;	//draw right
+		if(aimAngle >= 45 && aimAngle < 135)	//down
+			directionMod = 0;
+		else if(aimAngle >= 135 && aimAngle < 225)	//left
+			directionMod = 1;
+		else if(aimAngle >= 225 && aimAngle < 315)	//up
+			directionMod = 3;
+
+		var walkingMod = Math.floor(self.spriteAnimCounter) % 3;//1,2
+
+		ctx.drawImage(self.img,
+			walkingMod*frameWidth,directionMod*frameHeight,frameWidth,frameHeight,
+			x,y,self.width,self.height
+		);
+
+		ctx.restore();
+	}
+
+	self.updatePosition = function(){
+		var leftBumper = {x:self.x - 40,y:self.y};
+		var rightBumper = {x:self.x + 40,y:self.y};
+		var upBumper = {x:self.x,y:self.y - 16};
+		var downBumper = {x:self.x,y:self.y + 64};
+
+		if(Maps.current.isPositionWall(rightBumper)){
+			self.x -= 5;
+		} else {
+			if(self.pressingRight)
+				self.x += self.maxMoveSpd;
+		}
+
+		if(Maps.current.isPositionWall(leftBumper)){
+			self.x += 5;
+		} else {
+			if(self.pressingLeft)
+				self.x -= self.maxMoveSpd;
+		}
+		if(Maps.current.isPositionWall(downBumper)){
+			self.y -= 5;
+		} else {
+			if(self.pressingDown)
+				self.y += self.maxMoveSpd;
+		}
+		if(Maps.current.isPositionWall(upBumper)){
+			self.y += 5;
+		} else {
+			if(self.pressingUp)
+				self.y -= self.maxMoveSpd;
+		}
+
+		//ispositionvalid
+		if(self.x < self.width/2)
+			self.x = self.width/2;
+		if(self.x > Maps.current.width-self.width/2)
+			self.x = Maps.current.width - self.width/2;
+		if(self.y < self.height/2)
+			self.y = self.height/2;
+		if(self.y > Maps.current.height - self.height/2)
+			self.y = Maps.current.height - self.height/2;
+
+	}
+
+	var super_update = self.update;
+	self.update = function(){
+		super_update();
+		self.attackCounter += self.atkSpd;
+		if(self.hp <= 0)
+			self.onDeath();
+	}
+	self.onDeath = function(){};
+
+	self.performAttack = function(){
+		if(self.attackCounter > 25){	//every 1 sec
+			self.attackCounter = 0;
+			Bullet2.generate(self);
+		}
+	}
+
+	self.performSpecialAttack = function(){
+		if(self.attackCounter > 50){	//every 1 sec
+			self.attackCounter = 0;
+
+			for(var i = 0 ; i < 360; i++){
+				Bullet2.generate(self,i);
+			}
+
+			Bullet2.generate(self,self.aimAngle - 5);
+			Bullet2.generate(self,self.aimAngle);
+			Bullet2.generate(self,self.aimAngle + 5);
+		}
+	}
+	return self;
+}
+var enemyId=null;
+Enemy = function(id,x,y,width,height,img,hp,atkSpd)
+{
+	var self = Actor('enemy',id,x,y,width,height,img,hp,atkSpd);
+	Enemy.list[id] = self;
+	enemyId=id;
+	self.toRemove = false;
+
+/**************/
+	var super_update = self.update;
+	self.update = function(){
+		super_update();
+		self.spriteAnimCounter += 0.3;
+		self.updateAim();
+		self.updateKeyPress();
+		self.performAttack();
+	}
+	self.updateAim = function(){
+		var player =Player.list[selfId];
+		var diffX = player.x - self.x;
+		var diffY = player.y - self.y;
+
+		self.aimAngle = Math.atan2(diffY,diffX) / Math.PI * 180
+	}
+	self.updateKeyPress = function(){
+		var player=Player.list[selfId];
+		var diffX = player.x - self.x;
+		var diffY = player.y - self.y;
+
+		self.pressingRight = diffX > 3;
+		self.pressingLeft = diffX < -3;
+		self.pressingDown = diffY > 3;
+		self.pressingUp = diffY < -3;
+	}
+	var super_draw = self.draw;
+	self.draw = function(){
+	  var player =Player.list[selfId];
+		super_draw();
+		var x = self.x - player.x + WIDTH/2;
+		var y = self.y - player.y + HEIGHT/2 - self.height/2 - 20;
+
+		ctx.save();
+		ctx.fillStyle = 'red';
+		var width = 100*self.hp/self.hpMax;
+		if(width < 0)
+			width = 0;
+		ctx.fillRect(x-50,y,width,10);
+
+		ctx.strokeStyle = 'black';
+		ctx.strokeRect(x-50,y,100,10);
+
+		ctx.restore();
+
+	}
+
+	self.onDeath = function(){
+
+		self.toRemove = true;
+	}
+
+}
+
+Enemy.list = {};
+
+Enemy.update = function(){
+	if(frameCount % 100 === 0)	//every 4 sec
+		Enemy.randomlyGenerate();
+	for(var key in Enemy.list){
+		Enemy.list[key].update();
+	}
+	for(var key in Enemy.list){
+		if(Enemy.list[key].toRemove)
+			delete Enemy.list[key];
+	}
+/*////*/
+}
+
+Enemy.randomlyGenerate = function()
+{
+	//Math.random() returns a number between 0 and 1
+	var x = Math.random()*Maps.current.width;
+	var y = Math.random()*Maps.current.height;
+	var height = 64*1.5;
+	var width = 64*1.5;
+	var id = Math.random();
+	if(Math.random() < 0.5)
+		Enemy(id,x,y,width,height,Img.bat,2,1);
+	else
+		Enemy(id,x,y,width,height,Img.bee,1,3);
+}
+/*******************/
+document.onkeydown = function(event){
+	var player=Player.list[selfId];
+	if(event.keyCode === 68)
+	{ 	//d
+		player.spriteAnimCounter+=0.5;
+		//console.log("spriteAnimCounter:",player.spriteAnimCounter);
+		player.pressingRight = true;
+		socket.emit('keyPress',{inputId:'right',state:true});
+	}
+	else if(event.keyCode === 83){
+		player.pressingDown = true;
+		socket.emit('keyPress',{inputId:'down',state:true});
+		//player.spriteAnimCounter+=0.5;
+		//console.log("spriteAnimCounter:",player.spriteAnimCounter);
+	}	//s
+	else if(event.keyCode === 65){
+			player.pressingLeft = true;
+		socket.emit('keyPress',{inputId:'left',state:true});
+		//player.spriteAnimCounter+=0.5;
+		//console.log("spriteAnimCounter:",player.spriteAnimCounter);
+	} //a
+	else if(event.keyCode === 87){
+		player.pressingUp = true;
+		socket.emit('keyPress',{inputId:'up',state:true});
+		//player.spriteAnimCounter+=0.5;
+		//console.log("spriteAnimCounter:",player.spriteAnimCounter);
+	} // w
+	else if(event.keyCode === 80) //p
+		paused = !paused;
+}
+
+document.onkeyup = function(event){
+		var player=Player.list[selfId];
+	if(event.keyCode === 68){
+		player.pressingRight = false;
+		socket.emit('keyPress',{inputId:'right',state:false});
+	}	//d
+	else if(event.keyCode === 83){
+		player.pressingDown = false;
+		socket.emit('keyPress',{inputId:'down',state:false});
+	}	//s
+
+	else if(event.keyCode === 65){
+		player.pressingLeft = false;
+		socket.emit('keyPress',{inputId:'left',state:false});
+
+	} //a
+	else if(event.keyCode === 87){
+		player.pressingUp = false;
+		socket.emit('keyPress',{inputId:'up',state:false});
+
+	} // w
+}
+
+document.onmousedown = function(event){
+	socket.emit('keyPress',{inputId:'attack',state:true});
+	var audio = document.createElement("audio");
+		if(event){
+			audio.src = "/client/audio/starwars2.mp3";
+	    audio.play();
+		}
+
+
+	/*********/
+}
+document.onmouseup = function(event){
+	socket.emit('keyPress',{inputId:'attack',state:false});
+/**********************************/
+
+}
+document.onmousemove = function(mouse){
+	var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+	var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+	for(var i in Enemy.list){
+		var isColliding = testCollision(Enemy.list[i]);
+		if(isColliding){
+			console.log("Enemigo alcanzado");
+			delete Enemy.list[i];
+		}
+	}
+
+/******************/	//return if colliding (true/false)v
+function testCollision(enemy){
+			var rect1 =
+			{
+				x:mouseX,
+				y:mouseY,
+				width:mouseX,
+				height:mouseY,
+			}
+			var rect2 =
+			{
+				x:enemy.x-enemy.width/2,
+				y:enemy.y-enemy.height/2,
+				width:enemy.width,
+				height:enemy.height,
+			}
+
+			 return testCollisionRectRect(rect1,rect2);
+	}
+
+/*****************/
+	mouseX -= WIDTH/2;
+	mouseY -= HEIGHT/2;
+	var angle = Math.atan2(mouseY,mouseX) / Math.PI * 180;
+	var player=Player.list[selfId];
+/*	var x = -250 + event.clientX - 8;
+	var y = -250 + event.clientY - 8;
+	var angle = Math.atan2(y,x) / Math.PI * 180;*/
+	socket.emit('keyPress',{inputId:'mouseAngle',state:angle});
+	//console.log("ANGULO:",angle);
+	player.mouseAngle=angle;
+	/**********************************/
+ctx.drawImage(Img.blade,0,0,Img.blade.width,Img.blade.height,mouseX+WIDTH/2,mouseY+HEIGHT/2,60,60);
+	//if(mousex==)
+}
+//#####
+Bullet2 = function (id,x,y,spdX,spdY,width,height,combatType)
+{
+	var self = Entity('bullet',id,x,y,width,height,Img.bullet);
+
+	self.timer = 0;
+	self.combatType = combatType;
+	self.spdX = spdX;
+	self.spdY = spdY
+	self.toRemove = false;
+
+	var super_update = self.update;
+	self.update = function()
+	{
+		var player=Player.list[selfId];
+		super_update();
+		var toRemove = false;
+		self.timer++;
+		if(self.timer > 75)
+			self.toRemove = true;
+
+		if(self.combatType === 'player')
+		{	//bullet was shot by player
+
+				for(var key2 in Enemy.list){
+
+						if(self.testCollision(Enemy.list[key2]))
+						{
+							console.log("self.combatType==player, muere enemigo");
+							self.toRemove = true;
+							Enemy.list[key2].hp -= 1;
+							delete Enemy.list[key2];
+							Enemy.list[key2].onDeath();
+						}
+				}
+		}
+		else if(self.combatType === 'enemy')
+		{
+			if(self.testCollision(Player.list[selfId]))
+			{
+				//console.log("muere player");
+				var player=Player.list[selfId];
+				player.toRemove = true;
+				player.score-=1;
+				player.hp -= 1;
+				player.onDeath();
+				score-=1;
+
+			}
+		}
+		if(Maps.current.isPositionWall(self))
+		{
+			self.toRemove = true;
+		}
+
+	}
+
+	self.updatePosition = function()
+	{
+		self.x += self.spdX;
+		self.y += self.spdY;
+
+		if(self.x < 0 || self.x > Maps.current.width)
+		{
+			self.spdX = -self.spdX;
+		}
+		if(self.y < 0 || self.y > Maps.current.height)
+		{
+			self.spdY = -self.spdY;
+		}
+	}
+
+	Bullet2.list[id] = self;
+}//Bullet*/
+
+Bullet2.list = {};
+
+Bullet2.update = function()
+{
+	for(var key in Bullet2.list)
+	{
+		var b = Bullet2.list[key];
+		b.update();
+
+		if(b.toRemove)
+		{
+			delete Bullet2.list[key];
+		}
+	}
+}//Bullet*/
+
+Bullet2.generate = function(actor,aimOverwrite)
+{
+	//Math.random() returns a number between 0 and 1
+	var x = actor.x;
+	var y = actor.y;
+	var height = 24;
+	var width = 24;
+	var id = Math.random();
+
+	var angle;
+	if(aimOverwrite !== undefined)
+		angle = aimOverwrite;
+	else angle = actor.aimAngle;
+
+	var spdX = Math.cos(angle/180*Math.PI)*5;
+	var spdY = Math.sin(angle/180*Math.PI)*5;
+	Bullet2(id,x,y,spdX,spdY,width,height,actor.type);
+}//Bullet*/
+/************************************************************************/
+testCollisionRectRect = function(rect1,rect2){
+	return rect1.x <= rect2.x+rect2.width
+		&& rect2.x <= rect1.x+rect1.width
+		&& rect1.y <= rect2.y + rect2.height
+		&& rect2.y <= rect1.y + rect1.height;
+}
+/*
+document.onmousedown = function(mouse){
+	if(mouse.which === 1)
+		player.pressingMouseLeft = true;
+	else
+		player.pressingMouseRight = true;
+}
+document.onmouseup = function(mouse){
+	if(mouse.which === 1)
+		player.pressingMouseLeft = false;
+	else
+		player.pressingMouseRight = false;
+}
+document.oncontextmenu = function(mouse){
+	mouse.preventDefault();
+}
+
+document.onmousemove = function(mouse){
+	var mouseX = mouse.clientX - document.getElementById('ctx').getBoundingClientRect().left;
+	var mouseY = mouse.clientY - document.getElementById('ctx').getBoundingClientRect().top;
+
+	mouseX -= WIDTH/2;
+	mouseY -= HEIGHT/2;
+
+	player.aimAngle = Math.atan2(mouseY,mouseX) / Math.PI * 180;
+}
+
+document.onkeydown = function(event){
+	if(event.keyCode === 68)	//d
+		player.pressingRight = true;
+	else if(event.keyCode === 83)	//s
+		player.pressingDown = true;
+	else if(event.keyCode === 65) //a
+		player.pressingLeft = true;
+	else if(event.keyCode === 87) // w
+		player.pressingUp = true;
+
+	else if(event.keyCode === 80) //p
+		paused = !paused;
+}
+
+document.onkeyup = function(event){
+	if(event.keyCode === 68)	//d
+		player.pressingRight = false;
+	else if(event.keyCode === 83)	//s
+		player.pressingDown = false;
+	else if(event.keyCode === 65) //a
+		player.pressingLeft = false;
+	else if(event.keyCode === 87) // w
+		player.pressingUp = false;
+}*/
+
+/*functions update and maus move game*/
+	setInterval(function()
+	{
+		ctx.clearRect(0,0,WIDTH,HEIGHT);
+		//ctx.clearRect(0,0,WIDTH,HEIGHT);
+		//drawMap();
+		Maps.current.draw();
+		if(paused){
+			ctx.fillText('Paused',WIDTH/2,HEIGHT/2);
+			return;
+		}
+		if(!selfId){
+			return;
+		}
+		frameCount++;
+  	score++;
+		Enemy.update();
+		Upgrade.update();
+		drawScore();
+
+		for(var i in Player.list)
+			Player.list[i].draw();
+		for(var i in Bullet.list)
+			Bullet.list[i].draw();
+
+		Bullet2.update();
+
+	},70);
+
+	update = function(){
+	var player = Player.list[selfId];
+
+
+	player.update();
+
+	//ctx.fillText(player.hp + " Hp",0,30);
+	ctx.fillText('Score: ' + score,200,30);
+	for (var i = 0; i < Bullet.list.length; i++) {
+		console.log(Bullet.list[i]);
+	}
+
+}
+
+startNewGame = function(){
+
+	var player = Player.list[selfId];
+	//player.hp = 10;
+	timeWhenGameStarted = Date.now();
+	frameCount = 0;
+	score = 0;
+	Enemy.list = {};
+	Upgrade.list = {};
+	Bullet2.list = {};
+	Enemy.randomlyGenerate();
+	Enemy.randomlyGenerate();
+	Enemy.randomlyGenerate();
+
+}
+
+Maps = function(id,imgSrc,grid){
+	var self = {
+		id:id,
+		image:new Image(),
+		width:grid[0].length * TILE_SIZE,
+		height:grid.length * TILE_SIZE,
+		grid:grid,
+	}
+	//console.log("idmap:",id);
+	//console.log("imgSrc:",imgSrc);
+	self.image.src = imgSrc;
+
+	self.isPositionWall = function(pt){
+		var player = Player.list[selfId];
+		var gridX = Math.floor(player.x / TILE_SIZE);
+		var gridY = Math.floor(player.y / TILE_SIZE);
+
+		if(gridX < 0 || gridX >= self.grid[0].length)
+		{
+			console.log("topo en x");
+			console.log("gridX",gridX);
+			return true;
+		}
+		if(gridY < 0 || gridY >= self.grid.length)
+		{
+			console.log("topo en y");
+			console.log("gridY",gridY);
+			return true;
+		}
+
+		return self.grid[gridY][gridX];
+	}
+
+	self.draw = function(){
+
+		var player = Player.list[selfId];
+		//console.log("selfid:RRRRR",selfId);
+		var x = WIDTH/2 - player.x;
+		var y = HEIGHT/2 - player.y;
+		ctx.drawImage(self.image,0,0,self.image.width,self.image.height,x,y,self.image.width,self.image.height);
+	}
+	return self;
+}//Maps
+
+var array =[51, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 540, 541, 542, 543, 544, 545, 546, 426, 426, 426, 426, 426, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 51, 51, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 544, 545, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 540, 541, 542, 543, 544, 545, 546, 426, 426, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 51, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 543, 543, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 749, 532, 533, 534, 535, 532, 533, 534, 535, 536, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 749, 532, 533, 534, 535, 532, 533, 534, 535, 536, 532, 533, 534, 535, 536, 537, 538, 539, 540, 532, 532, 533, 534, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 749, 532, 533, 534, 535, 532, 533, 534, 535, 536, 532, 533, 534, 535, 536, 537, 538, 539, 540, 532, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 639, 639, 639, 639, 639, 639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 639, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 749, 749, 749, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 749, 749, 749, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1129, 1130, 1131, 1132, 1133, 1134, 1135, 749, 749, 749, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1169, 1170, 1171, 1172, 1173, 1174, 1175, 639, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1209, 1210, 1211, 1212, 1213, 1214, 1215, 639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1249, 1250, 1251, 1252, 1253, 1254, 1255, 639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 532, 532, 532, 532, 533, 639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0, 749, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 532, 533, 534, 535, 536, 537, 538, 539, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 536, 537, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 546, 546, 546, 542, 543, 544, 545, 546, 0, 0, 0, 0, 750, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0, 749, 749, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 532, 533, 534, 535, 536, 537, 538, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 532, 533, 534, 535, 532, 533, 534, 535, 532, 532, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 545, 546, 546, 546, 546, 546, 546, 0, 0, 0, 0, 750, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0, 749, 749, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 532, 533, 534, 535, 536, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 426, 426, 426, 426, 532, 533, 534, 535, 536, 537, 532, 532, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 542, 543, 544, 545, 546, 0, 0, 0, 0, 750, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 532, 533, 532, 532, 533, 639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 639, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 749, 749, 749, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 749, 749, 749, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1129, 1130, 1131, 1132, 1133, 1134, 1135, 749, 749, 749, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1169, 1170, 1171, 1172, 1173, 1174, 1175, 639, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1209, 1210, 1211, 1212, 1213, 1214, 1215, 639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 1249, 1250, 1251, 1252, 1253, 1254, 1255, 639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 639, 639, 639, 639, 639, 639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 750, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 546, 543, 544, 545, 546, 546, 546, 546, 546, 546, 546, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 750, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 532, 532, 532, 532, 532, 532, 532, 532, 532, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 546, 546, 546, 546, 541, 542, 543, 544, 545, 546, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 750, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 532, 532, 532, 532, 532, 532, 532, 532, 532, 532, 532, 532, 532, 533, 532, 532, 532, 532, 532, 532, 532, 532, 532, 532, 533, 532, 532, 532, 532, 532, 532, 532, 532, 532, 533, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 683, 684, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1812, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 639, 639, 639, 639, 639, 639, 639, 639, 1812, 1813, 1814, 1815, 1816, 0, 0, 1812, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 1009, 1010, 1011, 1012, 1013, 1014, 1015, 639, 1821, 1822, 1823, 1824, 1825, 0, 0, 1812, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 1049, 1050, 1051, 1052, 1053, 1054, 1055, 639, 1830, 1831, 1832, 1833, 1834, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 1089, 1090, 1091, 1092, 1093, 1094, 1095, 639, 719, 720, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 1129, 1130, 1131, 1132, 1133, 1134, 1135, 639, 731, 732, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 1169, 1170, 1171, 1172, 1173, 1174, 1175, 639, 671, 672, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 1209, 1210, 1211, 1212, 1213, 1214, 1215, 639, 683, 684, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 1249, 1250, 1251, 1252, 1253, 1254, 1255, 639, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 639, 639, 639, 639, 639, 639, 639, 639, 639, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 719, 720, 0, 0, 639, 639, 639, 639, 639, 639, 639, 639, 639, 0, 0, 0, 0, 0, 0, 0, 750, 750, 532, 533, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 750, 532, 533, 534, 535, 536, 537, 750, 750, 750, 750, 750, 750, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 750, 750, 750, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 750, 750, 750, 750, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 750, 750, 750, 750, 750, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 532, 533, 534, 535, 536, 537, 538, 539,
+	 540, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543, 544, 545, 546, 532, 533, 534, 535, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 532, 533, 534, 535, 536, 537, 538, 539, 540, 541, 542, 543];
+
+var array2D = [];
+for(var i = 0 ; i < 100; i++){
+	array2D[i] = [];
+	for(var j = 0 ; j < 100; j++){
+		array2D[i][j] = array[i*100 + j];
+		console.log("array2D",array2D[i][j]);
+	}
+}
+
+Maps.current = Maps('forest','/img/the_king_map.png',array2D);
+//player = Player();
+startNewGame();
+
+setInterval(update,70);
+
+</script>
